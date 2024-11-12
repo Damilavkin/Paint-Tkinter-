@@ -22,8 +22,6 @@ class DrawingApp:
         self.canvas.bind('<B1-Motion>', self.paint)
         self.canvas.bind('<ButtonRelease-1>', self.reset)
 
-
-
     def setup_ui(self):
         control_frame = tk.Frame(self.root)
         control_frame.pack(fill=tk.X)
@@ -36,6 +34,10 @@ class DrawingApp:
 
         save_button = tk.Button(control_frame, text="Сохранить", command=self.save_image)
         save_button.pack(side=tk.LEFT)
+        eraser = tk.Button(control_frame, text="Ластик", command=lambda: self.choose_eraser())
+        eraser.pack(side=tk.LEFT)
+
+
 
         self.brush_size_var = tk.IntVar(value=1)
         sizes = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
@@ -47,7 +49,7 @@ class DrawingApp:
 
     def update_brush_size(self, value):
         self.brush_size = int(value)  # Обновляет текущий размер кисти
-        self.brush_size_scale.set(self.brush_size) # Синхронизация со слайдером для выбора размера
+        self.brush_size_scale.set(self.brush_size)  # Синхронизация со слайдером для выбора размера
 
     def paint(self, event):
         if self.last_x and self.last_y:
@@ -70,6 +72,10 @@ class DrawingApp:
 
     def choose_color(self):
         self.pen_color = colorchooser.askcolor(color=self.pen_color)[1]
+
+    def choose_eraser(self):
+        self.pen_color = 'white'
+
 
     def save_image(self):
         file_path = filedialog.asksaveasfilename(filetypes=[('PNG files', '*.png')])
