@@ -34,7 +34,7 @@ class DrawingApp:
 
         save_button = tk.Button(control_frame, text="Сохранить", command=self.save_image)
         save_button.pack(side=tk.LEFT)
-        eraser = tk.Button(control_frame, text="Ластик", command=lambda: self.choose_eraser())
+        eraser = tk.Button(control_frame, text="Ластик", command=self.choose_eraser)
         eraser.pack(side=tk.LEFT)
 
 
