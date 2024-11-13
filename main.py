@@ -21,6 +21,7 @@ class DrawingApp:
 
         self.canvas.bind('<B1-Motion>', self.paint)
         self.canvas.bind('<ButtonRelease-1>', self.reset)
+        self.canvas.bind("<Button-3>", self.pipette)
 
     def setup_ui(self):
         control_frame = tk.Frame(self.root)
@@ -75,6 +76,12 @@ class DrawingApp:
 
     def choose_eraser(self):
         self.pen_color = 'white'
+
+    def pipette(self,event):
+        x, y = event.x, event.y
+        color = self.image.getpixel((x, y))  # Получаем цвет пикселя
+        self.pen_color = "#{:02x}{:02x}{:02x}".format(color[0], color[1], color[2])
+
 
 
     def save_image(self):
