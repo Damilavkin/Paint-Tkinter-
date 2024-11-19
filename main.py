@@ -1,5 +1,6 @@
 import tkinter as tk
 from tkinter import colorchooser, filedialog, messagebox
+from tkinter import simpledialog
 from PIL import Image, ImageDraw
 
 
@@ -42,6 +43,9 @@ class DrawingApp:
         eraser = tk.Button(control_frame, text="Ластик", command=self.choose_eraser)
         eraser.pack(side=tk.LEFT)
 
+        resize_button = tk.Button(control_frame, text="Изменить размер холста", command=self.resize_canvas)
+        resize_button.pack(side=tk.LEFT)
+
         # Виджет для "предварительного просмотра" цвета кисти
         self.color_preview = tk.Label(control_frame, width=5, height=1, bg=self.pen_color)
         self.color_preview.pack(side=tk.LEFT, padx=5)
@@ -54,6 +58,19 @@ class DrawingApp:
 
         self.brush_size_scale = tk.Scale(control_frame, from_=1, to=10, orient=tk.HORIZONTAL)
         self.brush_size_scale.pack(side=tk.LEFT)
+
+    def resize_canvas(self):
+        width = simpledialog.askinteger("Размер холста", "Введите новую ширину:", minvalue=1)
+        height = simpledialog.askinteger("Размер холста", "Введите новую высоту:", minvalue=1)
+
+        if width and height:  # Проверяем, получили ли валидные значения
+            # Создаем новый холст и обновляем объект Image
+            self.image = Image.new("RGB", (width, height), "white")
+            self.draw = ImageDraw.Draw(self.image)
+
+            # Обновляем размеры холста
+            self.canvas.config(width=width, height=height)
+            self.canvas.delete("all")  # Очищаем холст
 
     def paint(self, event):
         if self.last_x is not None and self.last_y is not None:
