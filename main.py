@@ -1,7 +1,7 @@
 import tkinter as tk
 from tkinter import colorchooser, filedialog, messagebox
 from tkinter import simpledialog
-from PIL import Image, ImageDraw
+from PIL import Image, ImageDraw, ImageFont
 
 
 class DrawingApp:
@@ -26,6 +26,28 @@ class DrawingApp:
         self.canvas.bind("<Button-3>", self.pipette)
         self.root.bind("<Control-s>", self.save_image)
         self.root.bind("<Control-c>", self.choose_color)
+        self.canvas.bind("<Button-1>", self.add_text)  # Добавляем обработчик для добавления текста
+
+    def change_background(self):
+        new_color = colorchooser.askcolor()[1]
+        if new_color:
+            self.canvas.config(bg=new_color)
+            self.image = Image.new("RGB", (self.canvas.winfo_width(), self.canvas.winfo_height()), new_color)
+            self.draw = ImageDraw.Draw(self.image)
+
+    def ask_for_text(self):
+        user_input = simpledialog.askstring("Введите текст", "Введите текст, который вы хотите добавить:")
+        if user_input:
+            self.text = user_input
+            self.awaiting_text_input = True  # Устанавливаем флаг, ожидающий добавление текста
+
+    def add_text(self, event):
+        if self.awaiting_text_input:  # Проверяем, установлен ли флаг
+            x, y = event.x, event.y
+            font = ImageFont.load_default()  # Используем стандартный шрифт
+            self.draw.text((x, y), self.text, fill=self.pen_color, font=font)
+            self.canvas.create_text((x, y), text=self.text, fill=self.pen_color, anchor='nw')
+            self.awaiting_text_input = False  # Сбрасываем флаг после добавления текста
 
     def setup_ui(self):
         control_frame = tk.Frame(self.root)
@@ -45,6 +67,12 @@ class DrawingApp:
 
         resize_button = tk.Button(control_frame, text="Изменить размер холста", command=self.resize_canvas)
         resize_button.pack(side=tk.LEFT)
+
+        change_bg_button = tk.Button(control_frame, text="Изменить фон", command=self.change_background)
+        change_bg_button.pack(side=tk.LEFT)
+
+        text_button = tk.Button(control_frame, text="Текст", command=self.ask_for_text)
+        text_button.pack(side=tk.LEFT)
 
         # Виджет для "предварительного просмотра" цвета кисти
         self.color_preview = tk.Label(control_frame, width=5, height=1, bg=self.pen_color)
@@ -127,4 +155,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
